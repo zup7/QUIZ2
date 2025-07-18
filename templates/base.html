@@ -6,15 +6,180 @@
     <title>{% block title %}Job Applicant Dashboard{% endblock %}</title>
     {% load static %}
     <link href="{% static 'bootstrap/css/bootstrap.min.css' %}" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --dark-bg: #1a1a2e;
+            --dark-card: #16213e;
+            --dark-header: #0f3460;
+            --text-light: #e0e0e0;
+            --text-muted-dark: #a0a0a0;
+            --border-dark: #0e1b36;
+            --primary-accent: #e94560;
+            --secondary-accent: #533483;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--dark-bg);
+            color: var(--text-light);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .navbar {
+            background-color: var(--dark-header) !important;
+            border-bottom: 1px solid var(--border-dark);
+        }
+        .navbar-brand {
+            font-weight: 600;
+            color: var(--text-light) !important;
+        }
+
+        .container {
+            flex-grow: 1;
+        }
+
+        .card {
+            background-color: var(--dark-card);
+            border: 1px solid var(--border-dark);
+            border-radius: 0.75rem; /* More rounded corners */
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3); /* Deeper shadow */
+            transition: all 0.3s ease-in-out;
+        }
+        .card:hover {
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .card-header {
+            background-color: var(--dark-header) !important;
+            color: var(--text-light) !important;
+            font-weight: 600;
+            border-bottom: 1px solid var(--border-dark);
+            border-radius: 0.75rem 0.75rem 0 0 !important; /* Match card radius */
+        }
+
+        .table {
+            color: var(--text-light);
+            border-color: var(--border-dark);
+        }
+        .table thead th {
+            background-color: var(--dark-header);
+            color: var(--text-light);
+            border-color: var(--border-dark);
+            font-weight: 500;
+        }
+        .table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+        .table tbody tr:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+        .table tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.08);
+        }
+        .table-borderless td, .table-borderless th {
+            border: none;
+        }
+        .table td strong {
+            color: var(--primary-accent); /* Highlight strong text */
+        }
+
+        .alert {
+            border: none;
+            border-radius: 0.5rem;
+            padding: 1rem 1.5rem;
+            color: #fff; /* Ensure text is white on dark alerts */
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .alert-info {
+            background-color: #2c5f78; /* Darker blue */
+        }
+        .alert-warning {
+            background-color: #785a2c; /* Darker orange */
+        }
+        .alert-success {
+            background-color: #2c785f; /* Darker green */
+        }
+        .alert-light { /* For project highlights */
+            background-color: #2a3e5c;
+            color: var(--text-light);
+            border-left: 5px solid var(--primary-accent); /* Accent border */
+        }
+        .alert .text-muted {
+            color: var(--text-muted-dark) !important; /* Ensure muted text is visible */
+        }
+
+        .badge {
+            font-size: 0.85em;
+            padding: 0.5em 0.8em;
+            border-radius: 0.5rem;
+            font-weight: 600;
+        }
+        .bg-info {
+            background-color: var(--secondary-accent) !important;
+            color: #fff;
+        }
+
+        .btn {
+            border-radius: 0.5rem;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+        .btn-primary {
+            background-color: var(--primary-accent);
+            border-color: var(--primary-accent);
+        }
+        .btn-primary:hover {
+            background-color: #e03250;
+            border-color: #e03250;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        .btn-secondary {
+            background-color: var(--secondary-accent);
+            border-color: var(--secondary-accent);
+        }
+        .btn-secondary:hover {
+            background-color: #4a2a6d;
+            border-color: #4a2a6d;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+        .btn-danger {
+            background-color: #c4324a;
+            border-color: #c4324a;
+        }
+        .btn-danger:hover {
+            background-color: #a8273d;
+            border-color: #a8273d;
+            transform: translateY(-1px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            color: var(--text-light);
+            font-weight: 600;
+        }
+        p {
+            color: var(--text-light);
+        }
+        small {
+            color: var(--text-muted-dark) !important;
+        }
+    </style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
+    <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container">
             <a class="navbar-brand" href="{% url 'portfolio:list' %}">Job Dashboard</a>
         </div>
     </nav>
 
-    <main class="container mt-4">
+    <main class="container mt-4 mb-4">
         {% if messages %}
             {% for message in messages %}
                 <div class="alert alert-success alert-dismissible fade show" role="alert">
